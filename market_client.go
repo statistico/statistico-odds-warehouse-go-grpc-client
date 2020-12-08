@@ -2,7 +2,7 @@ package statisticooddswarehouse
 
 import (
 	"context"
-	"github.com/statistico/statistico-proto/statistico-odds-warehouse/go"
+	"github.com/statistico/statistico-proto/go"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 	"io"
