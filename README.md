@@ -8,7 +8,7 @@ This library is a Go client for the Statistico Odds Warehouse service. API refer
 
 ## Installation
 ```.env
-$ go get -u github.com/statistico/statistico-proto/statistico-odds-warehouse/go
+$ go get -u github.com/statistico/statistico-odds-warehouse-go-grpc-client
 ```
 ## Usage
 To instantiate the required client struct and retrieve and search for marker runner resources:
