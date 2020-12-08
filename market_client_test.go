@@ -5,7 +5,7 @@ import (
 	"errors"
 	"github.com/golang/protobuf/ptypes/wrappers"
 	"github.com/statistico/statistico-odds-warehouse-go-grpc-client"
-	"github.com/statistico/statistico-proto/statistico-odds-warehouse/go"
+	"github.com/statistico/statistico-proto/go"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
 	"google.golang.org/grpc"
@@ -28,10 +28,10 @@ func TestMarketClient_MarketRunnerSearch(t *testing.T) {
 			Name:                 "MATCH_ODDS",
 			RunnerFilter:         &statisticoproto.RunnerFilter{
 				Name:                 "Home",
-				Line:                 statisticoproto.RunnerFilter_CLOSING,
-				Operators:            []*statisticoproto.FilterOperator{
+				Line:                 statisticoproto.LineEnum_CLOSING,
+				Operators:            []*statisticoproto.MetricOperator{
 					{
-						Operator: statisticoproto.FilterOperator_LTE,
+						Metric: statisticoproto.MetricEnum_LTE,
 						Value: 2.50,
 					},
 				},
@@ -80,10 +80,10 @@ func TestMarketClient_MarketRunnerSearch(t *testing.T) {
 			Name:                 "MATCH_ODDS",
 			RunnerFilter:         &statisticoproto.RunnerFilter{
 				Name:                 "Home",
-				Line:                 statisticoproto.RunnerFilter_CLOSING,
-				Operators:            []*statisticoproto.FilterOperator{
+				Line:                 statisticoproto.LineEnum_CLOSING,
+				Operators:            []*statisticoproto.MetricOperator{
 					{
-						Operator: statisticoproto.FilterOperator_LTE,
+						Metric: statisticoproto.MetricEnum_LTE,
 						Value: 2.50,
 					},
 				},
@@ -125,10 +125,10 @@ func TestMarketClient_MarketRunnerSearch(t *testing.T) {
 			Name:                 "MATCH_ODDS",
 			RunnerFilter:         &statisticoproto.RunnerFilter{
 				Name:                 "Home",
-				Line:                 statisticoproto.RunnerFilter_CLOSING,
-				Operators:            []*statisticoproto.FilterOperator{
+				Line:                 statisticoproto.LineEnum_CLOSING,
+				Operators:            []*statisticoproto.MetricOperator{
 					{
-						Operator: statisticoproto.FilterOperator_LTE,
+						Metric: statisticoproto.MetricEnum_LTE,
 						Value: 2.50,
 					},
 				},
@@ -170,10 +170,10 @@ func TestMarketClient_MarketRunnerSearch(t *testing.T) {
 			Name:                 "MATCH_ODDS",
 			RunnerFilter:         &statisticoproto.RunnerFilter{
 				Name:                 "Home",
-				Line:                 statisticoproto.RunnerFilter_CLOSING,
-				Operators:            []*statisticoproto.FilterOperator{
+				Line:                 statisticoproto.LineEnum_CLOSING,
+				Operators:            []*statisticoproto.MetricOperator{
 					{
-						Operator: statisticoproto.FilterOperator_LTE,
+						Metric: statisticoproto.MetricEnum_LTE,
 						Value: 2.50,
 					},
 				},
