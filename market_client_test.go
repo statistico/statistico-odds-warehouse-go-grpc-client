@@ -16,7 +16,7 @@ import (
 )
 
 func TestMarketClient_MarketRunnerSearch(t *testing.T) {
-	t.Run("calls market client and returns a struct channel and error channel", func(t *testing.T) {
+	t.Run("calls market client and returns a slice of MarketRunner struct", func(t *testing.T) {
 		t.Helper()
 
 		m := new(MockProtoMarketClient)
@@ -54,16 +54,13 @@ func TestMarketClient_MarketRunnerSearch(t *testing.T) {
 
 		mr, err := client.MarketRunnerSearch(ctx, &request)
 
-		if len(err) != 0 {
-			t.Fatal("Expected nil, got errors on channel")
+		if err != nil {
+			t.Fatalf("Expected nil, got %s", err.Error())
 		}
 
-		one := <-mr
-		two := <-mr
-
 		a := assert.New(t)
-		a.Equal(mk1, one)
-		a.Equal(mk2, two)
+		a.Equal(mk1, mr[0])
+		a.Equal(mk2, mr[1])
 		m.AssertExpectations(t)
 		stream.AssertExpectations(t)
 	})
@@ -102,18 +99,16 @@ func TestMarketClient_MarketRunnerSearch(t *testing.T) {
 
 		_, err := client.MarketRunnerSearch(ctx, &request)
 
-		e = <-err
-
-		if e == nil {
+		if err == nil {
 			t.Fatal("Expected errors, got nil")
 		}
 
-		assert.Equal(t, "invalid argument provided: rpc error: code = InvalidArgument desc = incorrect format", e.Error())
+		assert.Equal(t, "invalid argument provided: rpc error: code = InvalidArgument desc = incorrect format", err.Error())
 		m.AssertExpectations(t)
 		stream.AssertExpectations(t)
 	})
 
-	t.Run("logs error and returns internal server error", func(t *testing.T) {
+	t.Run("returns internal server error", func(t *testing.T) {
 		t.Helper()
 
 		m := new(MockProtoMarketClient)
@@ -147,18 +142,16 @@ func TestMarketClient_MarketRunnerSearch(t *testing.T) {
 
 		_, err := client.MarketRunnerSearch(ctx, &request)
 
-		e = <-err
-
-		if e == nil {
+		if err == nil {
 			t.Fatal("Expected errors, got nil")
 		}
 
-		assert.Equal(t, "internal server error returned from external service: rpc error: code = Internal desc = internal error", e.Error())
+		assert.Equal(t, "internal server error returned from external service: rpc error: code = Internal desc = internal error", err.Error())
 		m.AssertExpectations(t)
 		stream.AssertExpectations(t)
 	})
 
-	t.Run("logs error and returns internal server error if error parsing stream", func(t *testing.T) {
+	t.Run("returns internal server error if error parsing stream", func(t *testing.T) {
 		t.Helper()
 
 		m := new(MockProtoMarketClient)
@@ -198,13 +191,11 @@ func TestMarketClient_MarketRunnerSearch(t *testing.T) {
 
 		_, err := client.MarketRunnerSearch(ctx, &request)
 
-		e = <-err
-
-		if e == nil {
+		if err == nil {
 			t.Fatal("Expected errors, got nil")
 		}
 
-		assert.Equal(t, "internal server error returned from external service: oh damn", e.Error())
+		assert.Equal(t, "internal server error returned from external service: oh damn", err.Error())
 		m.AssertExpectations(t)
 		stream.AssertExpectations(t)
 	})
