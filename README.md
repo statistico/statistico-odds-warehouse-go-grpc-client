@@ -4,11 +4,11 @@
 
 This library is a Go client for the Statistico Odds Warehouse service. API reference can be found here:
 
-[Statistico Odds Warehouse Proto](https://github.com/statistico/statistico-proto/tree/main/statistico-odds-warehouse)
+[Statistico Odds Warehouse Proto](https://github.com/statistico/statistico-proto/blob/main/market.proto)
 
 ## Installation
 ```.env
-$ go get -u github.com/statistico/statistico-proto/statistico-odds-warehouse/go
+$ go get -u github.com/statistico/statistico-odds-warehouse-go-grpc-client
 ```
 ## Usage
 To instantiate the required client struct and retrieve and search for marker runner resources:
@@ -18,7 +18,7 @@ package main
 import (
     "context"
     "github.com/statistico/statistico-odds-warehouse-go-grpc-client"
-    "github.com/statistico/statistico-proto/statistico-odds-warehouse/go"
+    "github.com/statistico/statistico-proto/go"
     "google.golang.org/grpc"
 )
 
@@ -53,14 +53,14 @@ func main() {
 
     ctx := context.Background()
 
-    markets, errCh := client.MarketRunnerSearch(ctx, &request)
+    markets, err := client.MarketRunnerSearch(ctx, &request)
     
     for market := range markets {
         // Do something with market   
     }
 
-    for err := range errCh {
-        // Handle error   
+    if err != nil {
+        // Handle error
     }
 }
 ```
