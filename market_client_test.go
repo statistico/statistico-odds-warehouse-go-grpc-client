@@ -3,7 +3,7 @@ package statisticooddswarehouse_test
 import (
 	"context"
 	"errors"
-	"github.com/golang/protobuf/ptypes/wrappers"
+	"github.com/golang/protobuf/ptypes/timestamp"
 	"github.com/statistico/statistico-odds-warehouse-go-grpc-client"
 	"github.com/statistico/statistico-proto/go"
 	"github.com/stretchr/testify/assert"
@@ -25,21 +25,21 @@ func TestMarketClient_MarketRunnerSearch(t *testing.T) {
 		stream := new(MockMarketStream)
 
 		request := statisticoproto.MarketRunnerRequest{
-			Name:                 "MATCH_ODDS",
-			RunnerFilter:         &statisticoproto.RunnerFilter{
-				Name:                 "Home",
-				Line:                 statisticoproto.LineEnum_CLOSING,
-				Operators:            []*statisticoproto.MetricOperator{
+			Name: "MATCH_ODDS",
+			RunnerFilter: &statisticoproto.RunnerFilter{
+				Name: "Home",
+				Line: statisticoproto.LineEnum_CLOSING,
+				Operators: []*statisticoproto.MetricOperator{
 					{
 						Metric: statisticoproto.MetricEnum_LTE,
-						Value: 2.50,
+						Value:  2.50,
 					},
 				},
 			},
-			CompetitionIds:       []uint64{1, 2, 3},
-			SeasonIds:            []uint64{4, 5, 6},
-			DateFrom:             &wrappers.StringValue{Value: "2020-12-07T12:00:00+00:00"},
-			DateTo:               &wrappers.StringValue{Value: "2020-12-07T20:00:00+00:00"},
+			CompetitionIds: []uint64{1, 2, 3},
+			SeasonIds:      []uint64{4, 5, 6},
+			DateFrom:       &timestamp.Timestamp{Seconds: 1584014400},
+			DateTo:         &timestamp.Timestamp{Seconds: 1584014400},
 		}
 
 		mk1 := newProtoMarketRunner("1.2371761")
@@ -59,8 +59,8 @@ func TestMarketClient_MarketRunnerSearch(t *testing.T) {
 		}
 
 		a := assert.New(t)
-		a.Equal(mk1, mr[0])
-		a.Equal(mk2, mr[1])
+		a.Equal(mk1, <-mr)
+		a.Equal(mk2, <-mr)
 		m.AssertExpectations(t)
 		stream.AssertExpectations(t)
 	})
@@ -74,21 +74,21 @@ func TestMarketClient_MarketRunnerSearch(t *testing.T) {
 		stream := new(MockMarketStream)
 
 		request := statisticoproto.MarketRunnerRequest{
-			Name:                 "MATCH_ODDS",
-			RunnerFilter:         &statisticoproto.RunnerFilter{
-				Name:                 "Home",
-				Line:                 statisticoproto.LineEnum_CLOSING,
-				Operators:            []*statisticoproto.MetricOperator{
+			Name: "MATCH_ODDS",
+			RunnerFilter: &statisticoproto.RunnerFilter{
+				Name: "Home",
+				Line: statisticoproto.LineEnum_CLOSING,
+				Operators: []*statisticoproto.MetricOperator{
 					{
 						Metric: statisticoproto.MetricEnum_LTE,
-						Value: 2.50,
+						Value:  2.50,
 					},
 				},
 			},
-			CompetitionIds:       []uint64{1, 2, 3},
-			SeasonIds:            []uint64{4, 5, 6},
-			DateFrom:             &wrappers.StringValue{Value: "2020-12-07T12:00:00+00:00"},
-			DateTo:               &wrappers.StringValue{Value: "2020-12-07T20:00:00+00:00"},
+			CompetitionIds: []uint64{1, 2, 3},
+			SeasonIds:      []uint64{4, 5, 6},
+			DateFrom:       &timestamp.Timestamp{Seconds: 1584014400},
+			DateTo:         &timestamp.Timestamp{Seconds: 1584014400},
 		}
 
 		ctx := context.Background()
@@ -117,21 +117,21 @@ func TestMarketClient_MarketRunnerSearch(t *testing.T) {
 		stream := new(MockMarketStream)
 
 		request := statisticoproto.MarketRunnerRequest{
-			Name:                 "MATCH_ODDS",
-			RunnerFilter:         &statisticoproto.RunnerFilter{
-				Name:                 "Home",
-				Line:                 statisticoproto.LineEnum_CLOSING,
-				Operators:            []*statisticoproto.MetricOperator{
+			Name: "MATCH_ODDS",
+			RunnerFilter: &statisticoproto.RunnerFilter{
+				Name: "Home",
+				Line: statisticoproto.LineEnum_CLOSING,
+				Operators: []*statisticoproto.MetricOperator{
 					{
 						Metric: statisticoproto.MetricEnum_LTE,
-						Value: 2.50,
+						Value:  2.50,
 					},
 				},
 			},
-			CompetitionIds:       []uint64{1, 2, 3},
-			SeasonIds:            []uint64{4, 5, 6},
-			DateFrom:             &wrappers.StringValue{Value: "2020-12-07T12:00:00+00:00"},
-			DateTo:               &wrappers.StringValue{Value: "2020-12-07T20:00:00+00:00"},
+			CompetitionIds: []uint64{1, 2, 3},
+			SeasonIds:      []uint64{4, 5, 6},
+			DateFrom:       &timestamp.Timestamp{Seconds: 1584014400},
+			DateTo:         &timestamp.Timestamp{Seconds: 1584014400},
 		}
 
 		ctx := context.Background()
@@ -160,21 +160,21 @@ func TestMarketClient_MarketRunnerSearch(t *testing.T) {
 		stream := new(MockMarketStream)
 
 		request := statisticoproto.MarketRunnerRequest{
-			Name:                 "MATCH_ODDS",
-			RunnerFilter:         &statisticoproto.RunnerFilter{
-				Name:                 "Home",
-				Line:                 statisticoproto.LineEnum_CLOSING,
-				Operators:            []*statisticoproto.MetricOperator{
+			Name: "MATCH_ODDS",
+			RunnerFilter: &statisticoproto.RunnerFilter{
+				Name: "Home",
+				Line: statisticoproto.LineEnum_CLOSING,
+				Operators: []*statisticoproto.MetricOperator{
 					{
 						Metric: statisticoproto.MetricEnum_LTE,
-						Value: 2.50,
+						Value:  2.50,
 					},
 				},
 			},
-			CompetitionIds:       []uint64{1, 2, 3},
-			SeasonIds:            []uint64{4, 5, 6},
-			DateFrom:             &wrappers.StringValue{Value: "2020-12-07T12:00:00+00:00"},
-			DateTo:               &wrappers.StringValue{Value: "2020-12-07T20:00:00+00:00"},
+			CompetitionIds: []uint64{1, 2, 3},
+			SeasonIds:      []uint64{4, 5, 6},
+			DateFrom:       &timestamp.Timestamp{Seconds: 1584014400},
+			DateTo:         &timestamp.Timestamp{Seconds: 1584014400},
 		}
 
 		ctx := context.Background()
@@ -203,16 +203,16 @@ func TestMarketClient_MarketRunnerSearch(t *testing.T) {
 
 func newProtoMarketRunner(marketID string) *statisticoproto.MarketRunner {
 	return &statisticoproto.MarketRunner{
-		MarketId:             marketID,
-		MarketName:           "MATCH_ODDS",
-		RunnerName:           "Draw",
-		EventId:              1982181,
-		CompetitionId:        8,
-		SeasonId:             17420,
-		EventDate:            "2020-12-07T12:00:00+00:00",
-		Side:                 "BACK",
-		Exchange:             "betfair",
-		Prices:               []*statisticoproto.Price{},
+		MarketId:      marketID,
+		MarketName:    "MATCH_ODDS",
+		RunnerName:    "Draw",
+		EventId:       1982181,
+		CompetitionId: 8,
+		SeasonId:      17420,
+		EventDate:     &timestamp.Timestamp{Seconds: 1584014400},
+		Side:          "BACK",
+		Exchange:      "betfair",
+		Prices:        []*statisticoproto.Price{},
 	}
 }
 
