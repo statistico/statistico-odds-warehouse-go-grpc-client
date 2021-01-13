@@ -9,15 +9,16 @@ import (
 )
 
 type MarketClient interface {
-	MarketRunnerSearch(ctx context.Context, r *statisticoproto.MarketRunnerRequest) ([]*statisticoproto.MarketRunner, error)
+	MarketRunnerSearch(ctx context.Context, r *statisticoproto.MarketRunnerRequest) (<-chan *statisticoproto.MarketRunner, error)
 }
 
 type marketClient struct {
 	client statisticoproto.MarketServiceClient
 }
 
-func (m *marketClient) MarketRunnerSearch(ctx context.Context, r *statisticoproto.MarketRunnerRequest) ([]*statisticoproto.MarketRunner, error) {
-	mr := []*statisticoproto.MarketRunner{}
+func (m *marketClient) MarketRunnerSearch(ctx context.Context, r *statisticoproto.MarketRunnerRequest) (<-chan *statisticoproto.MarketRunner, error) {
+	runners := make(chan *statisticoproto.MarketRunner, 100)
+	defer close(runners)
 
 	stream, err := m.client.MarketRunnerSearch(ctx, r)
 
@@ -25,30 +26,32 @@ func (m *marketClient) MarketRunnerSearch(ctx context.Context, r *statisticoprot
 		if e, ok := status.FromError(err); ok {
 			switch e.Code() {
 			case codes.InvalidArgument:
-				return mr, ErrorInvalidArgument{err}
+				return runners, ErrorInvalidArgument{err}
 			case codes.Internal:
-				return mr, ErrorInternalServerError{err}
+				return runners, ErrorInternalServerError{err}
 			default:
-				return mr, ErrorBadGateway{err}
+				return runners, ErrorBadGateway{err}
 			}
 		}
 
-		return mr, err
+		return runners, err
 	}
 
 	for {
 		st, err := stream.Recv()
 
 		if err == io.EOF {
-			return mr, nil
+			break
 		}
 
 		if err != nil {
-			return mr, ErrorInternalServerError{err}
+			return runners, ErrorInternalServerError{err}
 		}
 
-		mr = append(mr, st)
+		runners <- st
 	}
+
+	return runners, nil
 }
 
 func NewMarketClient(p statisticoproto.MarketServiceClient) MarketClient {
