@@ -52,15 +52,21 @@ func TestMarketClient_MarketRunnerSearch(t *testing.T) {
 		stream.On("Recv").Once().Return(mk2, nil)
 		stream.On("Recv").Once().Return(&statisticoproto.MarketRunner{}, io.EOF)
 
-		mr, err := client.MarketRunnerSearch(ctx, &request)
+		errCh := make(chan error)
+
+		ch := client.MarketRunnerSearch(ctx, &request, errCh)
+
+		close(errCh)
+
+		err := <-errCh
 
 		if err != nil {
 			t.Fatalf("Expected nil, got %s", err.Error())
 		}
 
 		a := assert.New(t)
-		a.Equal(mk1, <-mr)
-		a.Equal(mk2, <-mr)
+		a.Equal(mk1, <-ch)
+		a.Equal(mk2, <-ch)
 		m.AssertExpectations(t)
 		stream.AssertExpectations(t)
 	})
@@ -97,13 +103,18 @@ func TestMarketClient_MarketRunnerSearch(t *testing.T) {
 
 		m.On("MarketRunnerSearch", ctx, &request, []grpc.CallOption(nil)).Return(stream, e)
 
-		_, err := client.MarketRunnerSearch(ctx, &request)
+		errCh := make(chan error, 1)
+
+		ch := client.MarketRunnerSearch(ctx, &request, errCh)
+
+		err := <-errCh
 
 		if err == nil {
 			t.Fatal("Expected errors, got nil")
 		}
 
 		assert.Equal(t, "invalid argument provided: rpc error: code = InvalidArgument desc = incorrect format", err.Error())
+		assert.Equal(t, 0, len(ch))
 		m.AssertExpectations(t)
 		stream.AssertExpectations(t)
 	})
@@ -140,13 +151,18 @@ func TestMarketClient_MarketRunnerSearch(t *testing.T) {
 
 		m.On("MarketRunnerSearch", ctx, &request, []grpc.CallOption(nil)).Return(stream, e)
 
-		_, err := client.MarketRunnerSearch(ctx, &request)
+		errCh := make(chan error, 1)
+
+		ch := client.MarketRunnerSearch(ctx, &request, errCh)
+
+		err := <-errCh
 
 		if err == nil {
 			t.Fatal("Expected errors, got nil")
 		}
 
 		assert.Equal(t, "internal server error returned from external service: rpc error: code = Internal desc = internal error", err.Error())
+		assert.Equal(t, 0, len(ch))
 		m.AssertExpectations(t)
 		stream.AssertExpectations(t)
 	})
@@ -189,13 +205,18 @@ func TestMarketClient_MarketRunnerSearch(t *testing.T) {
 		stream.On("Recv").Once().Return(mk2, nil)
 		stream.On("Recv").Once().Return(&statisticoproto.MarketRunner{}, e)
 
-		_, err := client.MarketRunnerSearch(ctx, &request)
+		errCh := make(chan error, 1)
+
+		ch := client.MarketRunnerSearch(ctx, &request, errCh)
+
+		err := <-errCh
 
 		if err == nil {
 			t.Fatal("Expected errors, got nil")
 		}
 
 		assert.Equal(t, "internal server error returned from external service: oh damn", err.Error())
+		assert.Equal(t, 2, len(ch))
 		m.AssertExpectations(t)
 		stream.AssertExpectations(t)
 	})

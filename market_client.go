@@ -9,16 +9,15 @@ import (
 )
 
 type MarketClient interface {
-	MarketRunnerSearch(ctx context.Context, r *statisticoproto.MarketRunnerRequest) (<-chan *statisticoproto.MarketRunner, error)
+	MarketRunnerSearch(ctx context.Context, r *statisticoproto.MarketRunnerRequest, errCh chan error) <-chan *statisticoproto.MarketRunner
 }
 
 type marketClient struct {
 	client statisticoproto.MarketServiceClient
 }
 
-func (m *marketClient) MarketRunnerSearch(ctx context.Context, r *statisticoproto.MarketRunnerRequest) (<-chan *statisticoproto.MarketRunner, error) {
+func (m *marketClient) MarketRunnerSearch(ctx context.Context, r *statisticoproto.MarketRunnerRequest, errCh chan error) <-chan *statisticoproto.MarketRunner {
 	runners := make(chan *statisticoproto.MarketRunner, 100)
-	defer close(runners)
 
 	stream, err := m.client.MarketRunnerSearch(ctx, r)
 
@@ -26,32 +25,45 @@ func (m *marketClient) MarketRunnerSearch(ctx context.Context, r *statisticoprot
 		if e, ok := status.FromError(err); ok {
 			switch e.Code() {
 			case codes.InvalidArgument:
-				return runners, ErrorInvalidArgument{err}
+				return sendError(ErrorInvalidArgument{err}, errCh, runners)
 			case codes.Internal:
-				return runners, ErrorInternalServerError{err}
+				return sendError(ErrorInternalServerError{err}, errCh, runners)
 			default:
-				return runners, ErrorBadGateway{err}
+				return sendError(ErrorBadGateway{err}, errCh, runners)
 			}
 		}
 
-		return runners, err
+		return sendError(err, errCh, runners)
 	}
 
+	go streamMarketRunners(stream, runners, errCh)
+
+	return runners
+}
+
+func streamMarketRunners(stream statisticoproto.MarketService_MarketRunnerSearchClient, ch chan *statisticoproto.MarketRunner, errCh chan error) {
 	for {
 		st, err := stream.Recv()
 
 		if err == io.EOF {
+			close(ch)
 			break
 		}
 
 		if err != nil {
-			return runners, ErrorInternalServerError{err}
+			errCh <- ErrorInternalServerError{err}
+			close(ch)
+			break
 		}
 
-		runners <- st
+		ch <- st
 	}
+}
 
-	return runners, nil
+func sendError(err error, errCh chan error, ch chan *statisticoproto.MarketRunner) <-chan *statisticoproto.MarketRunner {
+	errCh <- err
+	close(ch)
+	return ch
 }
 
 func NewMarketClient(p statisticoproto.MarketServiceClient) MarketClient {

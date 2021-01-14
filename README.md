@@ -17,6 +17,7 @@ package main
 
 import (
     "context"
+    "github.com/golang/protobuf/ptypes/timestamp"
     "github.com/statistico/statistico-odds-warehouse-go-grpc-client"
     "github.com/statistico/statistico-proto/go"
     "google.golang.org/grpc"
@@ -36,31 +37,31 @@ func main() {
     request := statisticoproto.MarketRunnerRequest{
         Name:                 "MATCH_ODDS",
         RunnerFilter:         &statisticoproto.RunnerFilter{
-        Name:                 "Home",
-        Line:                 statisticoproto.RunnerFilter_CLOSING,
-        Operators:            []*statisticoproto.FilterOperator{
-                {
-                    Operator: statisticoproto.FilterOperator_LTE,
-                    Value: 2.50,
+            Name:                 "Home",
+            Line:                 statisticoproto.LineEnum_CLOSING,
+            Operators:            []*statisticoproto.MetricOperator{
+                    {
+                        Metric: statisticoproto.MetricEnum_GTE,
+                        Value: 2.50,
+                    },
                 },
-            },
         },
         CompetitionIds:       []uint64{1, 2, 3},
         SeasonIds:            []uint64{4, 5, 6},
-        DateFrom:             &wrappers.StringValue{Value: "2020-12-07T12:00:00+00:00"},
-        DateTo:               &wrappers.StringValue{Value: "2020-12-07T20:00:00+00:00"},
+        DateFrom:             &timestamp.Timestamp{Seconds: 1584014400},
+        DateTo:               &timestamp.Timestamp{Seconds: 1584014400},
     }
 
     ctx := context.Background()
+    errCh := make(chan error, 1)
 
-    markets, err := client.MarketRunnerSearch(ctx, &request)
+    markets := client.MarketRunnerSearch(ctx, &request, errCh)
     
-    for market := range markets {
-        // Do something with market   
-    }
-
-    if err != nil {
-        // Handle error
+    select {
+    case market := <-markets:
+        // Do something with market
+    case err := <-errCh:
+        // Do something with err
     }
 }
 ```
