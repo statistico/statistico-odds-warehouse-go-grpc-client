@@ -24,14 +24,14 @@ func TestMarketClient_MarketRunnerSearch(t *testing.T) {
 
 		stream := new(MockMarketStream)
 
-		request := statisticoproto.MarketRunnerRequest{
+		request := statistico.MarketRunnerRequest{
 			Name: "MATCH_ODDS",
-			RunnerFilter: &statisticoproto.RunnerFilter{
+			RunnerFilter: &statistico.RunnerFilter{
 				Name: "Home",
-				Line: statisticoproto.LineEnum_CLOSING,
-				Operators: []*statisticoproto.MetricOperator{
+				Line: statistico.LineEnum_CLOSING,
+				Operators: []*statistico.MetricOperator{
 					{
-						Metric: statisticoproto.MetricEnum_LTE,
+						Metric: statistico.MetricEnum_LTE,
 						Value:  2.50,
 					},
 				},
@@ -50,7 +50,7 @@ func TestMarketClient_MarketRunnerSearch(t *testing.T) {
 		m.On("MarketRunnerSearch", ctx, &request, []grpc.CallOption(nil)).Return(stream, nil)
 		stream.On("Recv").Once().Return(mk1, nil)
 		stream.On("Recv").Once().Return(mk2, nil)
-		stream.On("Recv").Once().Return(&statisticoproto.MarketRunner{}, io.EOF)
+		stream.On("Recv").Once().Return(&statistico.MarketRunner{}, io.EOF)
 
 		ch, errCh := client.MarketRunnerSearch(ctx, &request)
 
@@ -75,14 +75,14 @@ func TestMarketClient_MarketRunnerSearch(t *testing.T) {
 
 		stream := new(MockMarketStream)
 
-		request := statisticoproto.MarketRunnerRequest{
+		request := statistico.MarketRunnerRequest{
 			Name: "MATCH_ODDS",
-			RunnerFilter: &statisticoproto.RunnerFilter{
+			RunnerFilter: &statistico.RunnerFilter{
 				Name: "Home",
-				Line: statisticoproto.LineEnum_CLOSING,
-				Operators: []*statisticoproto.MetricOperator{
+				Line: statistico.LineEnum_CLOSING,
+				Operators: []*statistico.MetricOperator{
 					{
-						Metric: statisticoproto.MetricEnum_LTE,
+						Metric: statistico.MetricEnum_LTE,
 						Value:  2.50,
 					},
 				},
@@ -121,14 +121,14 @@ func TestMarketClient_MarketRunnerSearch(t *testing.T) {
 
 		stream := new(MockMarketStream)
 
-		request := statisticoproto.MarketRunnerRequest{
+		request := statistico.MarketRunnerRequest{
 			Name: "MATCH_ODDS",
-			RunnerFilter: &statisticoproto.RunnerFilter{
+			RunnerFilter: &statistico.RunnerFilter{
 				Name: "Home",
-				Line: statisticoproto.LineEnum_CLOSING,
-				Operators: []*statisticoproto.MetricOperator{
+				Line: statistico.LineEnum_CLOSING,
+				Operators: []*statistico.MetricOperator{
 					{
-						Metric: statisticoproto.MetricEnum_LTE,
+						Metric: statistico.MetricEnum_LTE,
 						Value:  2.50,
 					},
 				},
@@ -167,14 +167,14 @@ func TestMarketClient_MarketRunnerSearch(t *testing.T) {
 
 		stream := new(MockMarketStream)
 
-		request := statisticoproto.MarketRunnerRequest{
+		request := statistico.MarketRunnerRequest{
 			Name: "MATCH_ODDS",
-			RunnerFilter: &statisticoproto.RunnerFilter{
+			RunnerFilter: &statistico.RunnerFilter{
 				Name: "Home",
-				Line: statisticoproto.LineEnum_CLOSING,
-				Operators: []*statisticoproto.MetricOperator{
+				Line: statistico.LineEnum_CLOSING,
+				Operators: []*statistico.MetricOperator{
 					{
-						Metric: statisticoproto.MetricEnum_LTE,
+						Metric: statistico.MetricEnum_LTE,
 						Value:  2.50,
 					},
 				},
@@ -195,7 +195,7 @@ func TestMarketClient_MarketRunnerSearch(t *testing.T) {
 		m.On("MarketRunnerSearch", ctx, &request, []grpc.CallOption(nil)).Return(stream, nil)
 		stream.On("Recv").Once().Return(mk1, nil)
 		stream.On("Recv").Once().Return(mk2, nil)
-		stream.On("Recv").Once().Return(&statisticoproto.MarketRunner{}, e)
+		stream.On("Recv").Once().Return(&statistico.MarketRunner{}, e)
 
 		ch, errCh := client.MarketRunnerSearch(ctx, &request)
 
@@ -212,8 +212,8 @@ func TestMarketClient_MarketRunnerSearch(t *testing.T) {
 	})
 }
 
-func newProtoMarketRunner(marketID string) *statisticoproto.MarketRunner {
-	return &statisticoproto.MarketRunner{
+func newProtoMarketRunner(marketID string) *statistico.MarketRunner {
+	return &statistico.MarketRunner{
 		MarketId:      marketID,
 		MarketName:    "MATCH_ODDS",
 		RunnerName:    "Draw",
@@ -223,7 +223,7 @@ func newProtoMarketRunner(marketID string) *statisticoproto.MarketRunner {
 		EventDate:     &timestamp.Timestamp{Seconds: 1584014400},
 		Side:          "BACK",
 		Exchange:      "betfair",
-		Prices:        []*statisticoproto.Price{},
+		Prices:        []*statistico.Price{},
 	}
 }
 
@@ -231,9 +231,9 @@ type MockProtoMarketClient struct {
 	mock.Mock
 }
 
-func (m *MockProtoMarketClient) MarketRunnerSearch(ctx context.Context, in *statisticoproto.MarketRunnerRequest, opts ...grpc.CallOption) (statisticoproto.MarketService_MarketRunnerSearchClient, error) {
+func (m *MockProtoMarketClient) MarketRunnerSearch(ctx context.Context, in *statistico.MarketRunnerRequest, opts ...grpc.CallOption) (statistico.MarketService_MarketRunnerSearchClient, error) {
 	args := m.Called(ctx, in, opts)
-	return args.Get(0).(statisticoproto.MarketService_MarketRunnerSearchClient), args.Error(1)
+	return args.Get(0).(statistico.MarketService_MarketRunnerSearchClient), args.Error(1)
 }
 
 type MockMarketStream struct {
@@ -241,7 +241,7 @@ type MockMarketStream struct {
 	grpc.ClientStream
 }
 
-func (m *MockMarketStream) Recv() (*statisticoproto.MarketRunner, error) {
+func (m *MockMarketStream) Recv() (*statistico.MarketRunner, error) {
 	args := m.Called()
-	return args.Get(0).(*statisticoproto.MarketRunner), args.Error(1)
+	return args.Get(0).(*statistico.MarketRunner), args.Error(1)
 }

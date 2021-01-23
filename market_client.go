@@ -9,15 +9,15 @@ import (
 )
 
 type MarketClient interface {
-	MarketRunnerSearch(ctx context.Context, r *statisticoproto.MarketRunnerRequest) (<-chan *statisticoproto.MarketRunner, <-chan error)
+	MarketRunnerSearch(ctx context.Context, r *statistico.MarketRunnerRequest) (<-chan *statistico.MarketRunner, <-chan error)
 }
 
 type marketClient struct {
-	client statisticoproto.MarketServiceClient
+	client statistico.MarketServiceClient
 }
 
-func (m *marketClient) MarketRunnerSearch(ctx context.Context, r *statisticoproto.MarketRunnerRequest) (<-chan *statisticoproto.MarketRunner, <-chan error) {
-	runners := make(chan *statisticoproto.MarketRunner, 100)
+func (m *marketClient) MarketRunnerSearch(ctx context.Context, r *statistico.MarketRunnerRequest) (<-chan *statistico.MarketRunner, <-chan error) {
+	runners := make(chan *statistico.MarketRunner, 100)
 	errCh := make(chan error, 1)
 
 	stream, err := m.client.MarketRunnerSearch(ctx, r)
@@ -42,7 +42,7 @@ func (m *marketClient) MarketRunnerSearch(ctx context.Context, r *statisticoprot
 	return runners, errCh
 }
 
-func streamMarketRunners(stream statisticoproto.MarketService_MarketRunnerSearchClient, ch chan *statisticoproto.MarketRunner, errCh chan error) {
+func streamMarketRunners(stream statistico.MarketService_MarketRunnerSearchClient, ch chan *statistico.MarketRunner, errCh chan error) {
 	for {
 		st, err := stream.Recv()
 
@@ -63,13 +63,13 @@ func streamMarketRunners(stream statisticoproto.MarketService_MarketRunnerSearch
 	}
 }
 
-func sendError(err error, ch chan *statisticoproto.MarketRunner, errCh chan error) (<-chan *statisticoproto.MarketRunner, <-chan error) {
+func sendError(err error, ch chan *statistico.MarketRunner, errCh chan error) (<-chan *statistico.MarketRunner, <-chan error) {
 	errCh <- err
 	close(ch)
 	close(errCh)
 	return ch, errCh
 }
 
-func NewMarketClient(p statisticoproto.MarketServiceClient) MarketClient {
+func NewMarketClient(p statistico.MarketServiceClient) MarketClient {
 	return &marketClient{client: p}
 }

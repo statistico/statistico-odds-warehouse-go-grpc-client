@@ -30,18 +30,18 @@ func main() {
         // Handle error
     }
 
-    c := statisticoproto.NewMarketServiceClient(conn)
+    c := statistico.NewMarketServiceClient(conn)
 
     client := statisticooddswarehouse.NewMarketClient(c)
 
-    request := statisticoproto.MarketRunnerRequest{
+    request := statistico.MarketRunnerRequest{
         Name:                 "MATCH_ODDS",
-        RunnerFilter:         &statisticoproto.RunnerFilter{
+        RunnerFilter:         &statistico.RunnerFilter{
             Name:                 "Home",
-            Line:                 statisticoproto.LineEnum_CLOSING,
-            Operators:            []*statisticoproto.MetricOperator{
+            Line:                 statistico.LineEnum_CLOSING,
+            Operators:            []*statistico.MetricOperator{
                     {
-                        Metric: statisticoproto.MetricEnum_GTE,
+                        Metric: statistico.MetricEnum_GTE,
                         Value: 2.50,
                     },
                 },
@@ -59,9 +59,9 @@ func main() {
     
     select {
     case market := <-markets:
-        // Do something with market
+        // Handle with market
     case err := <-errCh:
-        // Do something with err
+        // Handle err
     }
 }
 ```
