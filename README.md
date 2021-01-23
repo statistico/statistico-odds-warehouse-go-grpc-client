@@ -59,9 +59,9 @@ func main() {
     
     select {
     case market := <-markets:
-        // Do something with market
+        // Handle with market
     case err := <-errCh:
-        // Do something with err
+        // Handle err
     }
 }
 ```
