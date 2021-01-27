@@ -13,7 +13,7 @@ type MarketClient interface {
 }
 
 type marketClient struct {
-	client statistico.MarketServiceClient
+	client statistico.OddsWarehouseServiceClient
 }
 
 func (m *marketClient) MarketRunnerSearch(ctx context.Context, r *statistico.MarketRunnerRequest) (<-chan *statistico.MarketRunner, <-chan error) {
@@ -42,7 +42,7 @@ func (m *marketClient) MarketRunnerSearch(ctx context.Context, r *statistico.Mar
 	return runners, errCh
 }
 
-func streamMarketRunners(stream statistico.MarketService_MarketRunnerSearchClient, ch chan *statistico.MarketRunner, errCh chan error) {
+func streamMarketRunners(stream statistico.OddsWarehouseService_MarketRunnerSearchClient, ch chan *statistico.MarketRunner, errCh chan error) {
 	for {
 		st, err := stream.Recv()
 
@@ -70,6 +70,6 @@ func sendError(err error, ch chan *statistico.MarketRunner, errCh chan error) (<
 	return ch, errCh
 }
 
-func NewMarketClient(p statistico.MarketServiceClient) MarketClient {
+func NewMarketClient(p statistico.OddsWarehouseServiceClient) MarketClient {
 	return &marketClient{client: p}
 }
