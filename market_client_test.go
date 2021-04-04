@@ -193,14 +193,18 @@ func newProtoMarketRunner(marketID string) *statistico.MarketRunner {
 	return &statistico.MarketRunner{
 		MarketId:      marketID,
 		MarketName:    "MATCH_ODDS",
+		RunnerId:      781,
 		RunnerName:    "Draw",
 		EventId:       1982181,
 		CompetitionId: 8,
 		SeasonId:      17420,
 		EventDate:     &timestamp.Timestamp{Seconds: 1584014400},
-		Side:          "BACK",
 		Exchange:      "betfair",
-		Prices:        []*statistico.Price{},
+		Price:        &statistico.Price{
+			Value:                1.78,
+			Size:                 500,
+			Side:                 statistico.SideEnum_BACK,
+		},
 	}
 }
 
