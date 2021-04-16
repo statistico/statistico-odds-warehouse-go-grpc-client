@@ -182,7 +182,7 @@ func TestMarketClient_MarketRunnerSearch(t *testing.T) {
 			t.Fatal("Expected errors, got nil")
 		}
 
-		assert.Equal(t, "internal server error returned from external service: oh damn", err.Error())
+		assert.Equal(t, "error in stream for item : oh damn", err.Error())
 		assert.Equal(t, 2, len(ch))
 		m.AssertExpectations(t)
 		stream.AssertExpectations(t)

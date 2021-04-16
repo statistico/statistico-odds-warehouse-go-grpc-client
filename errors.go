@@ -36,3 +36,12 @@ type ErrorNotFound struct {
 func (e ErrorNotFound) Error() string {
 	return fmt.Sprintf("resource with is '%d' does not exist. Error: %s", e.ID, e.err.Error())
 }
+
+type ErrorStreamFailure struct {
+	item    interface{}
+	err     error
+}
+
+func (e ErrorStreamFailure) Error() string {
+	return fmt.Sprintf("error in stream for item %+v: %s", e.item, e.err.Error())
+}
