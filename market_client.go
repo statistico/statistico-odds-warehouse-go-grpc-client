@@ -53,9 +53,7 @@ func streamMarketRunners(stream statistico.OddsWarehouseService_MarketRunnerSear
 		}
 
 		if err != nil {
-			errCh <- ErrorInternalServerError{err}
-			close(ch)
-			close(errCh)
+			errCh <- ErrorStreamFailure{item: st, err: err}
 			break
 		}
 
