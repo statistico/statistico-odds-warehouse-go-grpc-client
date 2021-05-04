@@ -11,19 +11,19 @@ import (
 const DefaultChannelSize = 5000
 
 type MarketClient interface {
-	MarketRunnerSearch(ctx context.Context, r *statistico.MarketRunnerRequest, size int) (<-chan *statistico.MarketRunner, <-chan error)
+	MarketRunnerSearch(ctx context.Context, r *statistico.MarketRunnerRequest, chSize int) (<-chan *statistico.MarketRunner, <-chan error)
 }
 
 type marketClient struct {
 	client statistico.OddsWarehouseServiceClient
 }
 
-func (m *marketClient) MarketRunnerSearch(ctx context.Context, r *statistico.MarketRunnerRequest, size int) (<-chan *statistico.MarketRunner, <-chan error) {
-	if size == 0 {
-		size = DefaultChannelSize
+func (m *marketClient) MarketRunnerSearch(ctx context.Context, r *statistico.MarketRunnerRequest, chSize int) (<-chan *statistico.MarketRunner, <-chan error) {
+	if chSize == 0 {
+		chSize = DefaultChannelSize
 	}
 
-	runners := make(chan *statistico.MarketRunner, size)
+	runners := make(chan *statistico.MarketRunner, chSize)
 	errCh := make(chan error, 1)
 
 	stream, err := m.client.MarketRunnerSearch(ctx, r)
