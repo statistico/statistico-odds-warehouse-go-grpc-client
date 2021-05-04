@@ -8,6 +8,8 @@ import (
 	"io"
 )
 
+const DefaultChannelSize = 5000
+
 type MarketClient interface {
 	MarketRunnerSearch(ctx context.Context, r *statistico.MarketRunnerRequest) (<-chan *statistico.MarketRunner, <-chan error)
 }
@@ -17,7 +19,13 @@ type marketClient struct {
 }
 
 func (m *marketClient) MarketRunnerSearch(ctx context.Context, r *statistico.MarketRunnerRequest) (<-chan *statistico.MarketRunner, <-chan error) {
-	runners := make(chan *statistico.MarketRunner, 5000)
+	size := ctx.Value("channel-size")
+
+	if size == nil {
+		size = DefaultChannelSize
+	}
+
+	runners := make(chan *statistico.MarketRunner, size.(int))
 	errCh := make(chan error, 1)
 
 	stream, err := m.client.MarketRunnerSearch(ctx, r)
