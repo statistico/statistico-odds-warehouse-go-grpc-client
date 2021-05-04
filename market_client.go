@@ -8,16 +8,22 @@ import (
 	"io"
 )
 
+const DefaultChannelSize = 5000
+
 type MarketClient interface {
-	MarketRunnerSearch(ctx context.Context, r *statistico.MarketRunnerRequest) (<-chan *statistico.MarketRunner, <-chan error)
+	MarketRunnerSearch(ctx context.Context, r *statistico.MarketRunnerRequest, chSize int) (<-chan *statistico.MarketRunner, <-chan error)
 }
 
 type marketClient struct {
 	client statistico.OddsWarehouseServiceClient
 }
 
-func (m *marketClient) MarketRunnerSearch(ctx context.Context, r *statistico.MarketRunnerRequest) (<-chan *statistico.MarketRunner, <-chan error) {
-	runners := make(chan *statistico.MarketRunner, 100)
+func (m *marketClient) MarketRunnerSearch(ctx context.Context, r *statistico.MarketRunnerRequest, chSize int) (<-chan *statistico.MarketRunner, <-chan error) {
+	if chSize == 0 {
+		chSize = DefaultChannelSize
+	}
+
+	runners := make(chan *statistico.MarketRunner, chSize)
 	errCh := make(chan error, 1)
 
 	stream, err := m.client.MarketRunnerSearch(ctx, r)

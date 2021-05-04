@@ -47,7 +47,7 @@ func TestMarketClient_MarketRunnerSearch(t *testing.T) {
 		stream.On("Recv").Once().Return(mk2, nil)
 		stream.On("Recv").Once().Return(&statistico.MarketRunner{}, io.EOF)
 
-		ch, errCh := client.MarketRunnerSearch(ctx, &request)
+		ch, errCh := client.MarketRunnerSearch(ctx, &request, 5)
 
 		err := <-errCh
 
@@ -88,7 +88,7 @@ func TestMarketClient_MarketRunnerSearch(t *testing.T) {
 
 		m.On("MarketRunnerSearch", ctx, &request, []grpc.CallOption(nil)).Return(stream, e)
 
-		ch, errCh := client.MarketRunnerSearch(ctx, &request)
+		ch, errCh := client.MarketRunnerSearch(ctx, &request, 5)
 
 		err := <-errCh
 
@@ -128,7 +128,7 @@ func TestMarketClient_MarketRunnerSearch(t *testing.T) {
 
 		m.On("MarketRunnerSearch", ctx, &request, []grpc.CallOption(nil)).Return(stream, e)
 
-		ch, errCh := client.MarketRunnerSearch(ctx, &request)
+		ch, errCh := client.MarketRunnerSearch(ctx, &request, 5)
 
 		err := <-errCh
 
@@ -174,7 +174,7 @@ func TestMarketClient_MarketRunnerSearch(t *testing.T) {
 		stream.On("Recv").Once().Return(mk2, nil)
 		stream.On("Recv").Once().Return(&statistico.MarketRunner{}, e)
 
-		ch, errCh := client.MarketRunnerSearch(ctx, &request)
+		ch, errCh := client.MarketRunnerSearch(ctx, &request, 5)
 
 		err := <-errCh
 
