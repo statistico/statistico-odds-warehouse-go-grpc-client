@@ -17,7 +17,7 @@ type marketClient struct {
 }
 
 func (m *marketClient) MarketRunnerSearch(ctx context.Context, r *statistico.MarketRunnerRequest) (<-chan *statistico.MarketRunner, <-chan error) {
-	runners := make(chan *statistico.MarketRunner, 100)
+	runners := make(chan *statistico.MarketRunner, 5000)
 	errCh := make(chan error, 1)
 
 	stream, err := m.client.MarketRunnerSearch(ctx, r)
