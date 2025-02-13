@@ -10,6 +10,7 @@ import (
 
 type MarketClient interface {
 	GetExchangeOdds(ctx context.Context, r *statistico.ExchangeOddsRequest) ([]*statistico.ExchangeOdds, error)
+	GetEventMarkets(ctx context.Context, r *statistico.EventMarketRequest) ([]*statistico.Market, error)
 }
 
 type marketClient struct {
@@ -49,6 +50,43 @@ func (m *marketClient) GetExchangeOdds(ctx context.Context, r *statistico.Exchan
 	}
 
 	return odds, nil
+}
+
+func (m *marketClient) GetEventMarkets(ctx context.Context, r *statistico.EventMarketRequest) ([]*statistico.Market, error) {
+	markets := []*statistico.Market{}
+
+	stream, err := m.client.GetEventMarkets(ctx, r)
+
+	if err != nil {
+		if e, ok := status.FromError(err); ok {
+			switch e.Code() {
+			case codes.InvalidArgument:
+				return markets, ErrorInvalidArgument{err}
+			case codes.Internal:
+				return markets, ErrorInternalServerError{err}
+			default:
+				return markets, ErrorBadGateway{err}
+			}
+		}
+
+		return markets, err
+	}
+
+	for {
+		market, err := stream.Recv()
+
+		if err == io.EOF {
+			break
+		}
+
+		if err != nil {
+			return markets, ErrorInternalServerError{err}
+		}
+
+		markets = append(markets, market)
+	}
+
+	return markets, nil
 }
 
 func NewMarketClient(p statistico.OddsWarehouseServiceClient) MarketClient {
